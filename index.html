@@ -1,0 +1,716 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>东莞证券 x 稿定设计 年度使用汇报</title>
+  <style>
+    :root {
+      --ink: #0b1220;
+      --slate: #334155;
+      --muted: #64748b;
+      --line: #d7dee8;
+      --paper: #f8fafc;
+      --white: #fff;
+      --blue: #1d4ed8;
+      --blue-50: #eaf2ff;
+      --gold: #c89b3c;
+      --gold-50: #fff7e6;
+      --green: #0f766e;
+      --green-50: #e7f6f3;
+      --red: #b42318;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: var(--paper); color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; }
+    body { overflow: hidden; }
+    .deck { width: 100vw; height: 100vh; display: grid; place-items: center; padding: 0; }
+    .slide { display: none; width: 100vw; height: 100vh; background: var(--paper); position: relative; padding: 54px 68px; overflow: hidden; }
+    .slide.active { display: block; }
+    .cover-slide { padding-top: 104px; }
+    .kicker { display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: 14px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 20px; }
+    .kicker::before { content: ""; width: 46px; height: 3px; background: var(--gold); display: block; }
+    h1, h2, h3, p { margin: 0; }
+    h1 { font-size: 58px; line-height: 1.12; letter-spacing: -.02em; max-width: none; white-space: nowrap; }
+    h2 { font-size: 40px; line-height: 1.18; letter-spacing: -.01em; max-width: 1220px; }
+    .one-line-title { max-width: none; white-space: nowrap; }
+    h3 { font-size: 25px; line-height: 1.25; }
+    .title-blue { color: var(--blue); }
+    .lead { margin-top: 32px; font-size: 28px; line-height: 1.5; color: var(--slate); max-width: 1060px; }
+    .lead.one-line { max-width: none; white-space: nowrap; }
+    .note { font-size: 17px; line-height: 1.55; color: var(--muted); }
+    .body { font-size: 20px; line-height: 1.55; color: var(--slate); }
+    .insight { font-size: 24px !important; line-height: 1.45; font-weight: 850; color: var(--slate); }
+    .lead.insight, .note.insight { max-width: none; white-space: nowrap; }
+    .strong { font-weight: 850; color: var(--ink); }
+    .footer { position: absolute; left: 68px; right: 68px; bottom: 28px; display: flex; justify-content: space-between; color: #94a3b8; font-size: 13px; }
+    .controls { position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%); display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 999px; background: rgb(255 255 255 / 86%); border: 1px solid #d7dee8; backdrop-filter: blur(14px); z-index: 20; box-shadow: 0 12px 26px rgb(15 23 42 / 12%); }
+    button { border: 0; background: var(--ink); color: white; border-radius: 999px; padding: 6px 12px; cursor: pointer; font-size: 13px; }
+    button.secondary { background: #e2e8f0; color: var(--ink); }
+    button.icon { width: 34px; height: 34px; padding: 0; font-size: 23px; line-height: 1; }
+    button:disabled { opacity: .38; cursor: not-allowed; pointer-events: none; }
+    .counter { min-width: 58px; text-align: center; font-weight: 700; color: var(--slate); }
+    .progress { position: fixed; left: 0; top: 0; height: 4px; width: 100%; background: #dbe3ee; z-index: 30; }
+    .bar { height: 100%; background: linear-gradient(90deg, var(--gold), var(--blue)); width: 0; transition: width .2s ease; }
+    .cover-logos { margin: 28px 0 28px; display: flex; align-items: center; gap: 22px; height: 72px; }
+    .cover-logo-card { display: flex; align-items: center; justify-content: center; background: transparent; border: 0; padding: 0; }
+    .cover-logo-card.dg { width: 332px; height: 72px; justify-content: flex-start; }
+    .cover-logo-card.gd { width: 72px; height: 72px; overflow: hidden; }
+    .cover-logo-card.dg img { width: 300px; height: auto; display: block; }
+    .cover-logo-card.gd img { width: 72px; height: 72px; object-fit: cover; display: block; border-radius: 8px; }
+    .cover-logo-divider { width: 34px; height: 34px; display: grid; place-items: center; color: #94a3b8; font-size: 24px; font-weight: 300; }
+    .cover-logo-divider::before { content: "×"; }
+    .cover-meta { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-top: 92px; }
+    .card { background: var(--white); border: 1px solid var(--line); padding: 30px 32px; min-height: 150px; position: relative; }
+    .card.blue { background: var(--blue-50); border-color: #bbd3ff; }
+    .card.gold { background: var(--gold-50); border-color: #f0cf86; }
+    .label { font-size: 17px; color: var(--muted); font-weight: 850; margin-bottom: 20px; }
+    .value { font-size: 26px; font-weight: 850; }
+    .sub { margin-top: 12px; font-size: 15px; line-height: 1.35; color: var(--muted); font-weight: 760; }
+    .agenda { display: grid; grid-template-columns: repeat(4, 1fr); gap: 26px; margin-top: 100px; }
+    .agenda-card { background: var(--white); border: 1px solid #e2e8f0; padding: 30px 28px; min-height: 280px; }
+    .agenda-card.active { background: var(--blue-50); border-color: #bbd3ff; }
+    .agenda-no { font-size: 40px; color: var(--gold); font-weight: 900; margin-bottom: 44px; }
+    .metrics { display: grid; grid-template-columns: repeat(5, 1fr); gap: 26px; margin-top: 68px; }
+    .metrics.four { grid-template-columns: repeat(4, 1fr); }
+    .metrics.compact { margin-top: 34px; }
+    .metric { background: var(--white); border: 1px solid #e2e8f0; padding: 28px 24px; min-height: 166px; position: relative; }
+    .metric::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--blue); }
+    .metric.gold::before { background: var(--gold); }
+    .metric.green::before { background: var(--green); }
+    .metric.red::before { background: var(--red); }
+    .metric .num { font-size: 42px; line-height: 1; font-weight: 900; margin-bottom: 18px; }
+    .metric .caption { font-size: 18px; font-weight: 850; color: var(--slate); }
+    .metric .sub { margin-top: 12px; font-size: 14px; color: var(--muted); line-height: 1.35; }
+    .callouts { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 60px; }
+    .callouts.single { grid-template-columns: 1fr; }
+    .callouts.tight { margin-top: 30px; }
+    .callout { border: 1px solid #e2e8f0; background: var(--white); padding: 30px 32px; min-height: 136px; }
+    .callout.blue { background: var(--blue-50); border-color: #bbd3ff; }
+    .callout.gold { background: var(--gold-50); border-color: #f0cf86; }
+    .callout h3 { font-size: 28px; color: var(--ink); }
+    .callout .body { margin-top: 14px; font-size: 23px; line-height: 1.45; font-weight: 760; color: var(--ink); }
+    .hero-kpis { margin: 46px auto 0; display: grid; grid-template-columns: repeat(2, minmax(420px, 520px)); justify-content: center; gap: 30px; }
+    .hero-kpi { background: linear-gradient(135deg, var(--blue), #3b82f6); color: white; padding: 32px 38px; min-height: 166px; box-shadow: 0 22px 40px rgb(29 78 216 / 18%); }
+    .hero-kpi.gold { background: linear-gradient(135deg, var(--gold), #e7b94b); box-shadow: 0 22px 40px rgb(200 155 60 / 18%); }
+    .hero-kpi .label { color: rgb(255 255 255 / 82%); margin-bottom: 20px; }
+    .hero-kpi .num { font-size: 52px; line-height: 1; font-weight: 950; }
+    .hero-kpi .sub { color: rgb(255 255 255 / 82%); font-size: 16px; margin-top: 16px; }
+    .compare-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-top: 46px; }
+    .compare-card { background: var(--white); border: 1px solid #e2e8f0; padding: 24px; min-height: 164px; }
+    .compare-card h3 { color: var(--blue); margin-bottom: 22px; }
+    .delta { font-size: 34px; font-weight: 900; margin-top: 14px; }
+    .delta.up { color: var(--green); }
+    .delta.down { color: var(--red); }
+    .yoy-chart { margin-top: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .chart-card { background: var(--white); border: 1px solid #e2e8f0; padding: 22px 24px; min-height: 148px; }
+    .chart-card h3 { font-size: 20px; color: var(--slate); margin-bottom: 18px; }
+    .chart-row { display: grid; grid-template-columns: 110px 1fr 90px; align-items: center; gap: 14px; margin-top: 12px; font-size: 16px; color: var(--muted); }
+    .chart-track { height: 16px; background: #e2e8f0; }
+    .chart-fill { height: 100%; background: linear-gradient(90deg, var(--blue), #60a5fa); }
+    .chart-fill.prev { background: #cbd5e1; }
+    .user-growth-grid { margin-top: 54px; display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+    .growth-card { background: var(--white); border: 1px solid #e2e8f0; padding: 34px; min-height: 270px; }
+    .growth-card h3 { color: var(--blue); margin-bottom: 28px; }
+    .growth-bars { display: grid; gap: 22px; }
+    .growth-row { display: grid; grid-template-columns: 120px 1fr 92px; align-items: center; gap: 16px; font-size: 19px; color: var(--slate); }
+    .growth-track { height: 28px; background: #e2e8f0; }
+    .growth-fill { height: 100%; background: linear-gradient(90deg, var(--blue), #60a5fa); }
+    .growth-fill.prev { background: #cbd5e1; }
+    .growth-delta { margin-top: 28px; font-size: 38px; font-weight: 950; }
+    .growth-delta.up { color: var(--green); }
+    .growth-delta.flat { color: var(--muted); }
+    .case-board { margin-top: 34px; height: 420px; display: grid; grid-template-columns: 310px 1fr 310px; gap: 28px; align-items: stretch; }
+    .case-before { background: #eef2f7; border: 1px solid #dbe3ee; padding: 24px 28px; }
+    .case-before h3 { color: var(--blue); margin-bottom: 22px; }
+    .case-before .pain { margin-top: 22px; }
+    .case-before .pain h4 { margin: 0 0 12px; font-size: 22px; color: var(--ink); }
+    .case-before .pain p { font-size: 17px; line-height: 1.42; color: var(--muted); }
+    .case-main { background: var(--white); border: 1px solid #dbe3ee; padding: 24px 34px; display: flex; flex-direction: column; min-height: 0; }
+    .case-main h3 { font-size: 28px; color: var(--ink); margin-bottom: 16px; }
+    .case-main p { font-size: 19px; line-height: 1.42; color: var(--slate); }
+    .case-screen { margin-top: 18px; border: 5px solid #7da2f7; flex: 1; min-height: 0; background: linear-gradient(135deg, #f8fbff, #eaf2ff); overflow: hidden; cursor: zoom-in; }
+    .case-screen img { width: 100%; height: 100%; object-fit: cover; object-position: left top; display: block; }
+    .case-results { background: linear-gradient(180deg, #4f7cf2, #7f9cf7); color: white; padding: 24px 30px; display: grid; gap: 14px; }
+    .case-result h3 { display: inline-block; padding: 7px 16px; border-radius: 8px; background: white; color: var(--blue); font-size: 23px; margin-bottom: 12px; }
+    .case-result .big { font-size: 40px; line-height: 1; font-weight: 950; }
+    .case-result p { margin-top: 8px; font-size: 16px; line-height: 1.38; color: rgb(255 255 255 / 88%); }
+    .case-insight { margin-top: 172px; background: var(--gold-50); border: 1px solid #f0cf86; padding: 16px 24px; font-size: 20px; line-height: 1.35; font-weight: 850; color: var(--ink); }
+    .image-modal { position: fixed; inset: 0; z-index: 80; display: none; place-items: center; background: rgb(2 6 23 / 86%); padding: 42px; }
+    .image-modal.active { display: grid; }
+    .image-modal img { max-width: 96vw; max-height: 90vh; object-fit: contain; box-shadow: 0 30px 90px rgb(0 0 0 / 45%); }
+    .image-modal button { position: absolute; right: 32px; top: 26px; width: 42px; height: 42px; padding: 0; font-size: 24px; background: white; color: var(--ink); }
+    .bars { margin-top: 48px; display: grid; gap: 18px; max-width: 1240px; }
+    .bar-row { display: grid; grid-template-columns: 170px 1fr 120px 120px; align-items: center; gap: 20px; font-size: 18px; }
+    .bar-row.head div { font-size: 16px; color: var(--muted); font-weight: 900; }
+    .track { height: 22px; background: #e2e8f0; }
+    .fill { height: 100%; background: linear-gradient(90deg, var(--blue), #60a5fa); }
+    .dept { font-weight: 850; }
+    .bar-value { text-align: center; font-variant-numeric: tabular-nums; color: var(--slate); }
+    .table { margin-top: 46px; background: var(--white); border: 1px solid #e2e8f0; }
+    .tr { display: grid; grid-template-columns: 70px 140px 210px 1fr 110px 110px; min-height: 52px; align-items: center; border-bottom: 1px solid #e5eaf1; }
+    .tr:last-child { border-bottom: 0; }
+    .th { background: #f1f5f9; color: var(--muted); font-size: 15px; font-weight: 900; }
+    .td { padding: 0 18px; font-size: 18px; }
+    .num-cell { text-align: center; font-variant-numeric: tabular-nums; font-weight: 800; }
+    .top-table { margin-top: 36px; }
+    .top-table .tr { min-height: 42px; grid-template-columns: 70px 170px 190px 1fr 115px 115px; }
+    .top-table .tr:not(.th):nth-child(odd) { background: #f8fbff; }
+    .top-table .td { font-size: 16px; }
+    .top-table .tr:not(.th) .td:first-child {
+      justify-self: center;
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      background: var(--blue-50);
+      color: var(--blue);
+      font-weight: 900;
+      border: 1px solid #bbd3ff;
+    }
+    .top-table .tr:not(.th):nth-child(-n+4) .td:first-child {
+      background: var(--gold-50);
+      color: #9a6a08;
+      border-color: #f0cf86;
+    }
+    .top-table .num-cell { font-size: 17px; color: var(--ink); }
+    .summary-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-top: 24px; }
+    .summary-item { background: var(--blue-50); border: 1px solid #bbd3ff; padding: 16px 18px; min-height: 86px; }
+    .summary-item.gold { background: var(--gold-50); border-color: #f0cf86; }
+    .summary-item .num { font-size: 30px; line-height: 1; font-weight: 950; color: var(--blue); margin-bottom: 10px; }
+    .summary-item.gold .num { color: #9a6a08; }
+    .summary-item .label { font-size: 15px; margin-bottom: 0; }
+    .value-board { margin-top: 50px; display: grid; grid-template-columns: 350px 1fr; gap: 30px; align-items: stretch; }
+    .value-summary { background: var(--ink); color: white; padding: 40px 36px; display: flex; flex-direction: column; justify-content: space-between; min-height: 420px; }
+    .value-summary .big { font-size: 54px; line-height: 1.05; font-weight: 950; }
+    .value-summary p { color: rgb(255 255 255 / 78%); font-size: 21px; line-height: 1.45; }
+    .value-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+    .value-card { background: var(--white); border: 1px solid #e2e8f0; padding: 28px 26px; min-height: 196px; position: relative; overflow: hidden; }
+    .value-card::before { content: ""; position: absolute; left: 0; top: 0; right: 0; height: 6px; background: var(--blue); }
+    .value-card.gold::before { background: var(--gold); }
+    .value-card.green::before { background: var(--green); }
+    .value-card h3 { color: var(--ink); margin-bottom: 18px; }
+    .value-card p { color: var(--slate); font-size: 18px; line-height: 1.5; }
+    .value-tag { display: inline-block; margin-bottom: 22px; padding: 6px 12px; background: var(--blue-50); color: var(--blue); font-size: 13px; font-weight: 900; letter-spacing: .04em; }
+    .value-card.gold .value-tag { background: var(--gold-50); color: #9a6a08; }
+    .value-card.green .value-tag { background: var(--green-50); color: var(--green); }
+    .source-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin-top: 62px; }
+    .source-card { background: var(--white); border: 1px solid #e2e8f0; padding: 30px; min-height: 260px; }
+    .source-card.main { background: var(--blue-50); border-color: #bbd3ff; }
+    .source-card h3 { color: var(--blue); margin-bottom: 24px; }
+    .source-metric { display: grid; grid-template-columns: 1fr auto; gap: 20px; padding: 12px 0; border-bottom: 1px solid #e5eaf1; font-size: 20px; color: var(--slate); }
+    .source-metric:last-child { border-bottom: 0; }
+    .source-metric strong { color: var(--ink); font-size: 24px; }
+    .source-share { margin-top: 18px; display: grid; gap: 12px; }
+    .source-share-row { display: grid; grid-template-columns: 78px 1fr 64px; align-items: center; gap: 12px; font-size: 14px; color: var(--muted); font-weight: 850; }
+    .source-share-track { height: 12px; background: #e2e8f0; overflow: hidden; }
+    .source-share-fill { height: 100%; background: linear-gradient(90deg, var(--blue), #60a5fa); }
+    .source-share-fill.gold { background: linear-gradient(90deg, var(--gold), #f2c45b); }
+    .asset-structure { margin-top: 32px; background: var(--white); border: 1px solid #e2e8f0; padding: 26px 30px; }
+    .asset-structure h3 { font-size: 24px; color: var(--ink); margin-bottom: 20px; }
+    .asset-bar { display: flex; height: 26px; background: #e2e8f0; overflow: hidden; }
+    .asset-seg { height: 100%; }
+    .asset-seg.personal { width: 99.2%; background: linear-gradient(90deg, var(--blue), #60a5fa); }
+    .asset-seg.team { width: .8%; min-width: 10px; background: var(--gold); }
+    .asset-seg.enterprise { width: .1%; min-width: 6px; background: var(--red); }
+    .asset-legend { display: grid; grid-template-columns: 1fr 150px 150px; gap: 18px; margin-top: 18px; align-items: start; }
+    .asset-legend div { font-size: 18px; font-weight: 900; }
+    .asset-legend strong { display: block; margin-top: 6px; font-size: 20px; }
+    .asset-legend .personal { color: var(--blue); text-align: left; }
+    .asset-legend .team { color: var(--gold); text-align: center; }
+    .asset-legend .enterprise { color: var(--red); text-align: right; }
+    .dept-mini-table { margin-top: 36px; display: grid; gap: 4px; }
+    .dept-mini-row { display: grid; grid-template-columns: 1fr 70px 70px 100px 100px; align-items: center; min-height: 24px; background: var(--white); border: 1px solid #e5eaf1; padding: 0 12px; font-size: 13px; color: var(--slate); }
+    .dept-mini-row.head { background: #f1f5f9; color: var(--muted); font-weight: 900; }
+    .dept-mini-row div:not(:first-child) { text-align: center; font-variant-numeric: tabular-nums; }
+    .cap-hero { margin-top: 42px; display: grid; grid-template-columns: 1.05fr 1fr; gap: 30px; align-items: stretch; }
+    .cap-statement { background: var(--blue-50); border: 1px solid #bbd3ff; padding: 34px; min-height: 210px; }
+    .cap-statement h3 { color: var(--blue); font-size: 30px; margin-bottom: 24px; }
+    .cap-stack { display: grid; gap: 14px; }
+    .cap-pill { background: var(--white); border: 1px solid #e2e8f0; padding: 16px 20px; font-size: 20px; font-weight: 850; color: var(--slate); }
+    .cap-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; margin-top: 30px; }
+    .cap-card { background: var(--white); border: 1px solid #e2e8f0; padding: 26px 24px; min-height: 210px; position: relative; }
+    .cap-card::before { content: ""; position: absolute; left: 0; top: 0; right: 0; height: 5px; background: var(--blue); }
+    .cap-card.gold::before { background: var(--gold); }
+    .cap-card.green::before { background: var(--green); }
+    .cap-card h3 { color: var(--ink); font-size: 24px; margin-bottom: 18px; }
+    .cap-card p { font-size: 18px; line-height: 1.5; color: var(--slate); }
+    .cap-path { margin-top: 24px; background: var(--gold-50); border: 1px solid #f0cf86; padding: 22px 28px; font-size: 22px; line-height: 1.45; font-weight: 850; color: var(--ink); }
+    .timeline { display: grid; grid-template-columns: repeat(3, 1fr); gap: 36px; margin-top: 80px; }
+    .phase { background: var(--white); border: 1px solid #e2e8f0; padding: 34px; min-height: 312px; }
+    .phase .day { font-size: 34px; font-weight: 900; color: var(--blue); margin-bottom: 32px; }
+    .phase:nth-child(2) .day { color: var(--gold); }
+    .phase:nth-child(3) .day { color: var(--green); }
+    .phase ul { margin: 20px 0 0; padding-left: 22px; color: var(--slate); font-size: 19px; line-height: 1.65; }
+    .action { margin-top: 58px; display: grid; gap: 20px; }
+    .action-row { display: grid; grid-template-columns: 210px 1fr; min-height: 70px; align-items: center; background: var(--white); border: 1px solid #e2e8f0; padding: 0 32px; font-size: 19px; }
+    .action-row:first-child { background: var(--blue-50); border-color: #bbd3ff; }
+    .role { font-size: 20px; font-weight: 900; color: var(--blue); }
+    .action-board { margin-top: 58px; display: grid; grid-template-columns: 360px 1fr; gap: 30px; align-items: stretch; }
+    .action-focus { background: var(--blue-50); border: 1px solid #bbd3ff; padding: 36px; display: flex; flex-direction: column; justify-content: space-between; }
+    .action-focus .big { font-size: 44px; line-height: 1.1; color: var(--blue); font-weight: 950; }
+    .action-focus p { font-size: 21px; line-height: 1.5; color: var(--slate); }
+    .action-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    .action-card { background: var(--white); border: 1px solid #e2e8f0; padding: 26px 28px; min-height: 150px; position: relative; }
+    .action-card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--blue); }
+    .action-card.gold::before { background: var(--gold); }
+    .action-card.green::before { background: var(--green); }
+    .action-card h3 { font-size: 24px; color: var(--ink); margin-bottom: 16px; }
+    .action-card p { font-size: 18px; line-height: 1.5; color: var(--slate); }
+    .ops-board { margin-top: 48px; display: grid; grid-template-columns: 330px 1fr; gap: 30px; align-items: stretch; }
+    .ops-diagnosis { background: var(--blue-50); border: 1px solid #bbd3ff; padding: 32px; }
+    .ops-diagnosis h3 { color: var(--blue); font-size: 30px; margin-bottom: 24px; }
+    .ops-diagnosis ul { margin: 0; padding-left: 22px; font-size: 20px; line-height: 1.65; color: var(--slate); font-weight: 760; }
+    .ops-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; }
+    .ops-card { background: var(--white); border: 1px solid #e2e8f0; padding: 28px; min-height: 200px; position: relative; }
+    .ops-card::before { content: ""; position: absolute; left: 0; top: 0; right: 0; height: 6px; background: var(--blue); }
+    .ops-card.gold::before { background: var(--gold); }
+    .ops-card.green::before { background: var(--green); }
+    .ops-card h3 { font-size: 25px; color: var(--ink); margin-bottom: 18px; }
+    .ops-card p { font-size: 19px; line-height: 1.5; color: var(--slate); }
+    .ops-milestone { margin-top: 24px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .ops-step { background: var(--white); border: 1px solid #e2e8f0; padding: 22px 24px; }
+    .ops-step strong { display: block; color: var(--blue); font-size: 24px; margin-bottom: 10px; }
+    .ops-step span { font-size: 18px; line-height: 1.45; color: var(--slate); font-weight: 760; }
+    .feedback-board { margin-top: 54px; display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+    .feedback-panel { background: var(--white); border: 1px solid #e2e8f0; padding: 34px; min-height: 430px; }
+    .feedback-panel.blue { background: var(--blue-50); border-color: #bbd3ff; }
+    .feedback-panel h3 { color: var(--blue); font-size: 30px; margin-bottom: 28px; }
+    .feedback-list { display: grid; gap: 20px; }
+    .feedback-item { background: rgb(255 255 255 / 76%); border: 1px solid #e2e8f0; padding: 22px 24px; }
+    .feedback-item strong { display: block; font-size: 22px; color: var(--ink); margin-bottom: 10px; }
+    .feedback-item span { font-size: 18px; line-height: 1.5; color: var(--slate); }
+  </style>
+</head>
+<body>
+  <div class="progress"><div class="bar" id="bar"></div></div>
+  <main class="deck">
+    <section class="slide active cover-slide">
+      <div class="kicker">Annual Usage Review</div>
+      <div class="cover-logos">
+        <div class="cover-logo-card dg"><img src="assets/dongguan_securities_logo.svg" alt="东莞证券 logo"></div>
+        <div class="cover-logo-divider" aria-hidden="true"></div>
+        <div class="cover-logo-card gd"><img src="assets/gaoding_logo.png" alt="稿定设计 logo"></div>
+      </div>
+      <h1><span class="title-blue">东莞证券 x 稿定设计</span> 年度使用汇报</h1>
+      <p class="lead one-line">围绕平台使用价值、同比变化、用户与部门表现、资产沉淀和下一阶段运营建议进行复盘。</p>
+      <div class="cover-meta">
+        <div class="card"><div class="label">汇报周期</div><div class="value">2025.06.03 - 2026.06.02</div><div class="sub">对比周期：2024.06.03 - 2025.06.02</div></div>
+        <div class="card blue"><div class="label">席位与到期</div><div class="value">124 个席位</div><div class="sub">2026年8月26日到期</div></div>
+        <div class="card"><div class="label">版本</div><div class="value">企业版</div><div class="sub">适用于企业级内容生产与协作管理</div></div>
+        <div class="card blue"><div class="label">汇报日期</div><div class="value">2026年6月4日</div><div class="sub">稿定设计 · 企业版</div></div>
+      </div>
+      <div class="footer"><span>稿定设计 · 企业版</span><span>01</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker">Agenda</div>
+      <h2>本次复盘按“年度价值-使用结构-诊断建议-运营落地”推进</h2>
+      <div class="agenda">
+        <div class="agenda-card active"><div class="agenda-no">01</div><h3>年度价值</h3><p class="note">在高基数使用基础上，复盘导出、活跃深度、模板产出和资产沉淀变化。</p></div>
+        <div class="agenda-card"><div class="agenda-no">02</div><h3>使用结构</h3><p class="note">拆解作品来源、模板类型、部门 TOP10 和用户 TOP10，识别标杆使用方式。</p></div>
+        <div class="agenda-card"><div class="agenda-no">03</div><h3>案例与诊断</h3><p class="note">结合证券同业案例，围绕企业资源库、席位承载、资产安全和组织复用提出优化方向。</p></div>
+        <div class="agenda-card"><div class="agenda-no">04</div><h3>运营落地</h3><p class="note">明确资源库共建、席位增购、培训推广和季度复盘的下一步动作。</p></div>
+      </div>
+      <div class="footer"><span>稿定设计 · 企业版</span><span>02</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker">Value Proof</div>
+      <h2>东莞证券已形成高频、稳定、规模化的平台使用基础</h2>
+      <div class="hero-kpis">
+        <div class="hero-kpi"><div class="label">合作金额</div><div class="num">约 72,000 元</div><div class="sub">当前年度企业版合作投入</div></div>
+        <div class="hero-kpi gold"><div class="label">单次下载成本</div><div class="num">约 1.8 元/次</div><div class="sub">按 39,135 次年度导出测算</div></div>
+      </div>
+      <div class="metrics compact">
+        <div class="metric"><div class="num">150</div><div class="caption">年度用户数</div><div class="sub">数据明细累计用户</div></div>
+        <div class="metric gold"><div class="num">130</div><div class="caption">活跃用户</div><div class="sub">统计期内产生登录/使用</div></div>
+        <div class="metric green"><div class="num">39,135</div><div class="caption">新增导出</div><div class="sub">年度内容产出</div></div>
+        <div class="metric"><div class="num">27,449</div><div class="caption">新增资产</div><div class="sub">年度内容资产沉淀</div></div>
+        <div class="metric gold"><div class="num">12,226</div><div class="caption">活跃天数</div><div class="sub">用户全年使用粘性</div></div>
+      </div>
+      <div class="callouts single tight">
+        <div class="callout blue"><h3>核心判断</h3><p class="body">稿定设计已成为东莞证券多部门日常内容生产工具，并持续支撑分支机构营销、内宣和客户触达物料输出。</p></div>
+      </div>
+      <div class="footer"><span>稿定设计 · 企业版</span><span>03</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker">User Growth</div>
+      <h2>用户覆盖继续扩大，活跃用户保持高位稳定</h2>
+      <div class="user-growth-grid">
+        <div class="growth-card">
+          <h3>年度用户数</h3>
+          <div class="growth-bars">
+            <div class="growth-row"><div>2025-2026</div><div class="growth-track"><div class="growth-fill" style="width:100%"></div></div><strong>150</strong></div>
+            <div class="growth-row"><div>2024-2025</div><div class="growth-track"><div class="growth-fill prev" style="width:92%"></div></div><strong>138</strong></div>
+          </div>
+          <div class="growth-delta up">+8.7%</div>
+        </div>
+        <div class="growth-card">
+          <h3>活跃用户数</h3>
+          <div class="growth-bars">
+            <div class="growth-row"><div>2025-2026</div><div class="growth-track"><div class="growth-fill" style="width:99%"></div></div><strong>130</strong></div>
+            <div class="growth-row"><div>2024-2025</div><div class="growth-track"><div class="growth-fill prev" style="width:100%"></div></div><strong>131</strong></div>
+          </div>
+          <div class="growth-delta flat">基本持平</div>
+        </div>
+      </div>
+      <div class="callouts">
+        <div class="callout blue"><h3>结论</h3><p class="body">年度用户数从 138 增至 150，说明平台覆盖范围继续扩大；活跃用户数保持在 130 人左右，核心使用盘稳定。</p></div>
+        <div class="callout gold"><h3>建议</h3><p class="body">下一阶段重点应把新增覆盖用户转化为稳定活跃用户，并结合席位增购保障更多部门持续使用。</p></div>
+      </div>
+      <div class="footer"><span>稿定设计 · 企业版</span><span>00</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker">Year-on-Year</div>
+      <h2>本年度产出效率继续提升，导出量和活跃深度均有增长</h2>
+      <div class="compare-grid">
+        <div class="compare-card"><h3>导出次数</h3><p class="body">39,135 次 vs 37,191 次</p><div class="delta up">+5.2%</div></div>
+        <div class="compare-card"><h3>活跃天数</h3><p class="body">12,226 天 vs 10,974 天</p><div class="delta up">+11.4%</div></div>
+        <div class="compare-card"><h3>模板导出</h3><p class="body">35,868 次 vs 33,576 次</p><div class="delta up">+6.8%</div></div>
+        <div class="compare-card"><h3>图片模板导出</h3><p class="body">32,414 次 vs 28,692 次</p><div class="delta up">+13.0%</div></div>
+      </div>
+      <div class="yoy-chart">
+        <div class="chart-card"><h3>导出次数对比</h3><div class="chart-row"><div>2025-2026</div><div class="chart-track"><div class="chart-fill" style="width:100%"></div></div><div>39,135</div></div><div class="chart-row"><div>2024-2025</div><div class="chart-track"><div class="chart-fill prev" style="width:95%"></div></div><div>37,191</div></div></div>
+        <div class="chart-card"><h3>图片模板导出对比</h3><div class="chart-row"><div>2025-2026</div><div class="chart-track"><div class="chart-fill" style="width:100%"></div></div><div>32,414</div></div><div class="chart-row"><div>2024-2025</div><div class="chart-track"><div class="chart-fill prev" style="width:89%"></div></div><div>28,692</div></div></div>
+      </div>
+      <p class="lead one-line insight">启发：去年已高频使用，今年导出小幅增长、活跃天数提升，下一阶段重点转向复用质量和组织沉淀。</p>
+      <div class="footer"><span>稿定设计 · 企业版</span><span>04</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker">Usage Structure</div>
+      <h2>模板能力是当前主要产出来源，说明用户已形成稳定的自主设计路径</h2>
+      <div class="metrics four">
+        <div class="metric"><div class="num">35,868</div><div class="caption">模板导出</div><div class="sub">占新增导出约 91.7%</div></div>
+        <div class="metric gold"><div class="num">3,160</div><div class="caption">素材导出</div><div class="sub">支撑物料编辑与二次创作</div></div>
+        <div class="metric green"><div class="num">1,528</div><div class="caption">PPT 模板导出</div><div class="sub">会议、培训和汇报场景基础</div></div>
+        <div class="metric"><div class="num">2,727</div><div class="caption">抠图导出</div><div class="sub">本地化内容制作需求明显</div></div>
+      </div>
+      <div class="callouts">
+        <div class="callout"><h3>使用特点</h3><p class="body">图片模板导出同比增长 13.0%，说明分支机构对快速生成海报、活动图和营销物料的依赖进一步增强。</p></div>
+        <div class="callout gold"><h3>运营建议</h3><p class="body">围绕证券客户高频场景沉淀标准模板包，减少重复设计，提高各分支机构内容产出一致性。</p></div>
+      </div>
+      <div class="footer"><span>稿定设计 · 企业版</span><span>05</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker">Department Usage</div>
+      <h2>作品来源显示：稿定模板是主要产出来源，自产内容也在沉淀资产</h2>
+      <div class="source-grid">
+        <div class="source-card main"><h3>汇总</h3><div class="source-metric"><span>新增导出</span><strong>39,135</strong></div><div class="source-metric"><span>新增资产</span><strong>27,449</strong></div><div class="source-metric"><span>统计说明</span><strong>核心口径</strong></div></div>
+        <div class="source-card"><h3>稿定</h3><div class="source-metric"><span>新增导出</span><strong>37,642</strong></div><div class="source-metric"><span>新增资产</span><strong>19,924</strong></div><div class="source-share"><div class="source-share-row"><span>导出占比</span><div class="source-share-track"><div class="source-share-fill" style="width:96.2%"></div></div><strong>96.2%</strong></div><div class="source-share-row"><span>资产占比</span><div class="source-share-track"><div class="source-share-fill gold" style="width:72.6%"></div></div><strong>72.6%</strong></div></div></div>
+        <div class="source-card"><h3>自产</h3><div class="source-metric"><span>新增导出</span><strong>1,493</strong></div><div class="source-metric"><span>新增资产</span><strong>7,525</strong></div><div class="source-share"><div class="source-share-row"><span>导出占比</span><div class="source-share-track"><div class="source-share-fill" style="width:3.8%"></div></div><strong>3.8%</strong></div><div class="source-share-row"><span>资产占比</span><div class="source-share-track"><div class="source-share-fill gold" style="width:27.4%"></div></div><strong>27.4%</strong></div></div></div>
+      </div>
+      <p class="lead one-line insight">启发：稿定模板支撑主要产出，自产资产占比接近三成，适合进一步沉淀为企业资源库和标准化模板包。</p>
+      <div class="footer"><span>稿定设计 · 企业版</span><span>06</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker">Department Usage</div>
+      <h2 class="one-line-title">部门使用情况 TOP10 覆盖主要产出部门，整体已有 115 个部门产生使用</h2>
+      <div class="table top-table">
+        <div class="tr th"><div class="td">排名</div><div class="td">部门</div><div class="td">用户/活跃</div><div class="td">使用特点</div><div class="td num-cell">导出</div><div class="td num-cell">资产</div></div>
+        <div class="tr"><div class="td">1</div><div class="td strong">北京分公司</div><div class="td">2 / 2</div><div class="td">产出规模领先，资产沉淀突出</div><div class="td num-cell">4,983</div><div class="td num-cell">1,967</div></div>
+        <div class="tr"><div class="td">2</div><div class="td strong">经纪部</div><div class="td">1 / 1</div><div class="td">总部条线稳定使用</div><div class="td num-cell">1,550</div><div class="td num-cell">303</div></div>
+        <div class="tr"><div class="td">3</div><div class="td strong">厚街分公司</div><div class="td">1 / 1</div><div class="td">分支机构物料高产出</div><div class="td num-cell">1,313</div><div class="td num-cell">384</div></div>
+        <div class="tr"><div class="td">4</div><div class="td strong">互金部</div><div class="td">4 / 4</div><div class="td">多人协同使用，资产沉淀高</div><div class="td num-cell">1,239</div><div class="td num-cell">1,985</div></div>
+        <div class="tr"><div class="td">5</div><div class="td strong">四川分公司</div><div class="td">2 / 2</div><div class="td">导出与资产沉淀均衡</div><div class="td num-cell">1,170</div><div class="td num-cell">1,570</div></div>
+        <div class="tr"><div class="td">6</div><div class="td strong">长安分公司</div><div class="td">2 / 1</div><div class="td">已有核心活跃用户</div><div class="td num-cell">954</div><div class="td num-cell">392</div></div>
+        <div class="tr"><div class="td">7</div><div class="td strong">梅州分公司</div><div class="td">1 / 1</div><div class="td">模板使用稳定</div><div class="td num-cell">935</div><div class="td num-cell">471</div></div>
+        <div class="tr"><div class="td">8</div><div class="td strong">西城营业部</div><div class="td">1 / 1</div><div class="td">高活跃持续产出</div><div class="td num-cell">930</div><div class="td num-cell">182</div></div>
+        <div class="tr"><div class="td">9</div><div class="td strong">经纪管理总部</div><div class="td">4 / 3</div><div class="td">多用户覆盖，适合沉淀部门模板</div><div class="td num-cell">912</div><div class="td num-cell">940</div></div>
+        <div class="tr"><div class="td">10</div><div class="td strong">东莞大道营业部</div><div class="td">1 / 1</div><div class="td">本地化物料稳定产出</div><div class="td num-cell">909</div><div class="td num-cell">128</div></div>
+      </div>
+      <div class="summary-strip">
+        <div class="summary-item"><div class="num">119</div><div class="label">部门总数</div></div>
+        <div class="summary-item gold"><div class="num">115</div><div class="label">活跃部门</div></div>
+        <div class="summary-item"><div class="num">150</div><div class="label">覆盖用户</div></div>
+        <div class="summary-item gold"><div class="num">39,135</div><div class="label">部门总导出</div></div>
+      </div>
+      <p class="note insight" style="margin-top:14px;">启发：TOP 部门可作为内部标杆，低频部门可通过模板包、培训和场景案例带动使用提升。</p>
+      <div class="footer"><span>稿定设计 · 企业版</span><span>00</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker">User TOP</div>
+      <h2>高频用户已形成可复制的标杆使用基础</h2>
+      <div class="table top-table">
+        <div class="tr th"><div class="td">排名</div><div class="td">成员</div><div class="td">部门</div><div class="td">使用特点</div><div class="td num-cell">导出</div><div class="td num-cell">资产</div></div>
+        <div class="tr"><div class="td">1</div><div class="td strong">赵婧</div><div class="td">北京分公司</div><div class="td">高频导出，全年持续使用</div><div class="td num-cell">2,943</div><div class="td num-cell">696</div></div>
+        <div class="tr"><div class="td">2</div><div class="td strong">梁艺</div><div class="td">北京分公司</div><div class="td">导出和资产沉淀均突出</div><div class="td num-cell">2,040</div><div class="td num-cell">1,271</div></div>
+        <div class="tr"><div class="td">3</div><div class="td strong">叶玉琪</div><div class="td">经纪部</div><div class="td">模板使用稳定</div><div class="td num-cell">1,550</div><div class="td num-cell">303</div></div>
+        <div class="tr"><div class="td">4</div><div class="td strong">龚雨</div><div class="td">厚街分公司</div><div class="td">分支机构物料高产出</div><div class="td num-cell">1,313</div><div class="td num-cell">384</div></div>
+        <div class="tr"><div class="td">5</div><div class="td strong">王晓婷</div><div class="td">长安分公司</div><div class="td">长期活跃使用基础好</div><div class="td num-cell">954</div><div class="td num-cell">392</div></div>
+        <div class="tr"><div class="td">6</div><div class="td strong">宋芬苑</div><div class="td">梅州分公司</div><div class="td">模板使用稳定</div><div class="td num-cell">935</div><div class="td num-cell">471</div></div>
+        <div class="tr"><div class="td">7</div><div class="td strong">韩欢</div><div class="td">四川分公司</div><div class="td">资产沉淀表现突出</div><div class="td num-cell">933</div><div class="td num-cell">1,068</div></div>
+        <div class="tr"><div class="td">8</div><div class="td strong">王志成</div><div class="td">西城营业部</div><div class="td">高活跃、持续产出</div><div class="td num-cell">930</div><div class="td num-cell">182</div></div>
+        <div class="tr"><div class="td">9</div><div class="td strong">周晓敏</div><div class="td">东莞大道营业部</div><div class="td">分支机构物料稳定产出</div><div class="td num-cell">909</div><div class="td num-cell">128</div></div>
+        <div class="tr"><div class="td">10</div><div class="td strong">卢泳诗</div><div class="td">中山分公司</div><div class="td">模板导出表现稳定</div><div class="td num-cell">864</div><div class="td num-cell">140</div></div>
+      </div>
+      <p class="note insight" style="margin-top:24px;">建议：围绕 TOP 用户沉淀“场景-模板-作品”案例，作为内部推广、培训和优秀案例复盘素材。</p>
+      <div class="footer"><span>稿定设计 · 企业版</span><span>07</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker">Financial Value</div>
+      <h2 class="one-line-title">稿定价值不止效率，更包括品牌一致、版权安全、资产复用和可控管理</h2>
+      <div class="value-board">
+        <div class="value-summary">
+          <div class="big">企业级内容生产能力</div>
+          <p>东莞证券当前已经具备稳定高频使用基础，下一阶段价值应从“个人快速出图”升级为“组织统一生产、统一复用、统一管控”。</p>
+        </div>
+        <div class="value-cards">
+          <div class="value-card gold"><span class="value-tag">效率</span><h3>快速产出</h3><p>模板化设计和即时导出支撑分支机构快速完成日常营销、内宣和客户触达内容。</p></div>
+          <div class="value-card"><span class="value-tag">品牌</span><h3>统一表达</h3><p>企业模板和资源库有助于统一不同分支机构的视觉表达和品牌标准。</p></div>
+          <div class="value-card green"><span class="value-tag">版权</span><h3>商用安全</h3><p>企业级商用授权降低证券内容对外传播过程中的素材版权风险。</p></div>
+          <div class="value-card"><span class="value-tag">资产</span><h3>沉淀复用</h3><p>将高频模板、优秀作品和素材沉淀为可复用企业资产，减少重复制作。</p></div>
+          <div class="value-card green"><span class="value-tag">安全</span><h3>资产可控</h3><p>通过权限、下载日志、资产交接等能力降低资产流失和追溯困难风险。</p></div>
+          <div class="value-card gold"><span class="value-tag">合规</span><h3>过程留痕</h3><p>后续可结合审批、操作留痕和统一模板管理，提升内容生产过程可控性。</p></div>
+        </div>
+      </div>
+      <div class="footer"><span>稿定设计 · 企业版</span><span>09</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker">Customer Case</div>
+      <h2>同业案例：中国银河证券通过内容中台带来整体业务内容增长</h2>
+      <div class="case-board">
+        <div class="case-before">
+          <h3>使用稿定前</h3>
+          <div class="pain"><h4>业务需求难满足</h4><p>集团内容供给需要覆盖多分公司、多营业部和大量业务人员，传统内容生产难以支撑规模化需求。</p></div>
+          <div class="pain"><h4>设计成本负担重</h4><p>内容生产依赖外包或总部集中支持，一线响应速度和设计成本均面临压力。</p></div>
+        </div>
+        <div class="case-main">
+          <h3>1 个内容中台，解决全集团优质内容供给问题</h3>
+          <p>银河证券整合企业历史设计资产及稿定内容，丰富营销素材库，双端赋能企业运营及一线内容生产。</p>
+          <div class="case-screen"><img class="zoomable" src="assets/china_galaxy_asset_library.png" alt="中国银河证券内容中台素材库截图"></div>
+        </div>
+        <div class="case-results">
+          <div class="case-result"><h3>海量创作</h3><div class="big">2万+</div><p>内容生产，1273 人半年累计做图量</p></div>
+          <div class="case-result"><h3>敏捷响应</h3><div class="big">15 倍</div><p>设计制作时间从平均 2 天/页提效至 20 分钟/页</p></div>
+          <div class="case-result"><h3>成本降低</h3><div class="big">90%↓</div><p>设计成本从平均 2500 元/个降低到 36 元/个</p></div>
+        </div>
+      </div>
+      <div class="case-insight">对东莞证券的启发：在高频使用基础上，可进一步建设证券营销内容中台，把模板、素材和优秀作品沉淀为全组织可复用资产。</div>
+      <div class="footer"><span>稿定设计 · 企业版</span><span>00</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker">Asset Diagnosis</div>
+      <h2>资产沉淀规模大，但企业级资源库建设仍有明显提升空间</h2>
+      <div class="metrics four">
+        <div class="metric"><div class="num">27,449</div><div class="caption">新增资产</div><div class="sub">年度累计沉淀</div></div>
+        <div class="metric gold"><div class="num">27,217</div><div class="caption">个人库新增</div><div class="sub">占新增资产约 99.2%</div></div>
+        <div class="metric green"><div class="num">214</div><div class="caption">团队空间新增</div><div class="sub">跨团队沉淀仍较少</div></div>
+        <div class="metric red"><div class="num">18</div><div class="caption">企业资源库新增</div><div class="sub">同比下降 93.9%</div></div>
+      </div>
+      <div class="asset-structure">
+        <h3>资产沉淀结构：个人库占绝大多数，企业级复用空间仍待建设</h3>
+        <div class="asset-bar"><div class="asset-seg personal"></div><div class="asset-seg team"></div><div class="asset-seg enterprise"></div></div>
+        <div class="asset-legend"><div class="personal">个人库 <strong>27,217 / 99.2%</strong></div><div class="team">团队空间 <strong>214 / 0.8%</strong></div><div class="enterprise">企业资源库 <strong>18 / 0.1%</strong></div></div>
+      </div>
+      <div class="callouts">
+        <div class="callout blue"><h3>诊断结论</h3><p class="body">当前资产更多沉淀在个人库，组织级可复用素材、模板和成品沉淀不足，影响跨分支机构复用效率。</p></div>
+        <div class="callout"><h3>解决方向</h3><p class="body">建议以高频场景为单位共建企业资源库，把优秀模板和成品从个人空间沉淀到企业可复用资产。</p></div>
+      </div>
+      <div class="footer"><span>稿定设计 · 企业版</span><span>08</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker">Seat Diagnosis</div>
+      <h2>当前使用人数已超过购买席位，建议通过增购支撑组织级稳定使用</h2>
+      <div class="metrics four">
+        <div class="metric"><div class="num">124</div><div class="caption">购买席位</div><div class="sub">东莞证券当前采购规模</div></div>
+        <div class="metric gold"><div class="num">150</div><div class="caption">年度用户</div><div class="sub">较席位多 26 人</div></div>
+        <div class="metric green"><div class="num">130</div><div class="caption">活跃用户</div><div class="sub">较席位多 6 人</div></div>
+        <div class="metric"><div class="num">8.26</div><div class="caption">到期日期</div><div class="sub">2026年8月26日</div></div>
+      </div>
+      <div class="callouts">
+        <div class="callout blue"><h3>诊断结论</h3><p class="body">年度用户和活跃用户均已超过 124 个购买席位，说明当前需求不再只是存量使用，而是存在组织覆盖扩大的增量需求。</p></div>
+        <div class="callout gold"><h3>增购建议</h3><p class="body">建议结合续约增购，将席位提升至 150-160 个区间，优先保障高频部门、新增用户和资源库共建参与人员稳定使用。</p></div>
+      </div>
+      <div class="footer"><span>稿定设计 · 企业版</span><span>00</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker">Risk & Opportunity</div>
+      <h2>平台使用表现良好，下一阶段关键在于把个人产出转化为组织资产</h2>
+      <div class="metrics four">
+        <div class="metric green"><div class="num">0</div><div class="caption">账号风险记录</div><div class="sub">本期未产生新增记录</div></div>
+        <div class="metric"><div class="num">128</div><div class="caption">导出用户</div><div class="sub">使用覆盖保持稳定</div></div>
+        <div class="metric gold"><div class="num">12</div><div class="caption">本期新增用户</div><div class="sub">当前年度新增进入平台</div></div>
+        <div class="metric red"><div class="num">18</div><div class="caption">企业库新增</div><div class="sub">组织资产沉淀需强化</div></div>
+      </div>
+      <div class="callouts">
+        <div class="callout"><h3>机会点</h3><p class="body">已有大量个人库资产和高频用户，可以作为企业资源库建设的素材来源和共创基础。</p></div>
+        <div class="callout gold"><h3>建议表达</h3><p class="body">把下一阶段目标定义为“提升组织复用能力”，比单纯追求更多导出更符合证券客户的长期价值。</p></div>
+      </div>
+      <div class="footer"><span>稿定设计 · 企业版</span><span>12</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker">Capability Focus</div>
+      <h2>面向证券客户，优先建设可控、安全、可复用的企业级内容能力</h2>
+      <div class="cap-hero">
+        <div class="cap-statement">
+          <h3>从“个人高频出图”升级为“企业级内容生产体系”</h3>
+          <p class="body">东莞证券已经具备广泛使用基础，下一阶段产品能力应重点服务于分支机构复用、品牌一致、资产安全和过程可控。</p>
+        </div>
+        <div class="cap-stack">
+          <div class="cap-pill">统一模板：降低分支机构视觉偏差</div>
+          <div class="cap-pill">企业资源库：让优秀作品可复用、可管理</div>
+          <div class="cap-pill">权限与日志：保障资产安全和过程追溯</div>
+        </div>
+      </div>
+      <div class="cap-grid">
+        <div class="cap-card"><h3>企业资源库</h3><p>将优秀模板、素材和成品从个人库沉淀到企业级资源，提升跨部门复用效率。</p></div>
+        <div class="cap-card gold"><h3>品牌模板</h3><p>固化证券客户常用场景规范，降低一线自主制作时的品牌表达差异。</p></div>
+        <div class="cap-card green"><h3>权限与资产管理</h3><p>按组织和角色管理资产使用范围，支持人员变化后的资产安全交接。</p></div>
+        <div class="cap-card"><h3>审批与操作留痕</h3><p>为金融内容生产提供可追溯链路，支撑内容管理、审计和复盘。</p></div>
+      </div>
+      <div class="cap-path">落地路径：先共建高频模板包，再推动优秀作品入库，最后结合权限、日志和复盘机制形成长期运营闭环。</div>
+      <div class="footer"><span>稿定设计 · 企业版</span><span>11</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker">Next Steps</div>
+      <h2 class="one-line-title">建立持续运营机制，推动平台价值从高频使用进入资产复用</h2>
+      <div class="action-board">
+        <div class="action-focus">
+          <div class="big">运营闭环</div>
+          <p>围绕重点部门、标杆用户、高频场景和资源库共建，形成可持续的季度复盘机制。</p>
+          <p class="strong">目标：从个人高频使用升级为企业级模板复用和资产管理。</p>
+        </div>
+        <div class="action-grid">
+          <div class="action-card"><h3>稿定侧</h3><p>输出年度使用复盘、标杆用户清单、培训建议和资源库共建方案。</p></div>
+          <div class="action-card gold"><h3>东莞证券侧</h3><p>确认重点部门、典型业务场景、资源库责任人和席位增购节奏。</p></div>
+          <div class="action-card green"><h3>双方共创</h3><p>围绕营销海报、活动宣传、客户触达、内宣和会议 PPT 共建模板包。</p></div>
+          <div class="action-card"><h3>复盘节奏</h3><p>按季度跟踪导出、活跃、部门覆盖、资源库新增和优秀案例沉淀。</p></div>
+        </div>
+      </div>
+      <div class="footer"><span>稿定设计 · 企业版</span><span>13</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker">Operation Plan</div>
+      <h2>下一阶段运营计划：围绕诊断结果推进培训、宣传和资源库共建</h2>
+      <div class="ops-board">
+        <div class="ops-diagnosis">
+          <h3>诊断结果</h3>
+          <ul>
+            <li>用户覆盖扩大，但活跃用户基本持平，需要提升新增用户稳定使用。</li>
+            <li>年度用户已超过 124 个席位，续约阶段存在增购承载需求。</li>
+            <li>资产主要沉淀在个人库，企业级资源库和模板复用仍需加强。</li>
+            <li>TOP 部门和 TOP 用户已具备标杆复制基础。</li>
+          </ul>
+        </div>
+        <div>
+          <div class="ops-grid">
+            <div class="ops-card"><h3>培训计划</h3><p>围绕新用户、低频部门和重点业务场景开展分层培训，重点覆盖证券营销海报、客户触达物料、内宣内容和会议 PPT。</p></div>
+            <div class="ops-card gold"><h3>宣传计划</h3><p>沉淀 TOP 用户和 TOP 部门的优秀案例，形成内部推广素材，带动更多分支机构复制成熟使用方式。</p></div>
+            <div class="ops-card green"><h3>资源库共建</h3><p>优先把高频模板、优秀作品和自产素材从个人库沉淀到企业资源库，提升跨部门复用效率。</p></div>
+            <div class="ops-card"><h3>席位与权限</h3><p>结合续约和增购节奏，优先保障高频部门、新增用户和资源库共建人员稳定使用，并同步梳理权限管理。</p></div>
+          </div>
+          <div class="ops-milestone">
+            <div class="ops-step"><strong>30 天</strong><span>确认重点部门、培训名单和标杆案例。</span></div>
+            <div class="ops-step"><strong>60 天</strong><span>完成模板包共建和资源库首批入库。</span></div>
+            <div class="ops-step"><strong>90 天</strong><span>复盘活跃、导出、资源库新增和席位使用。</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="footer"><span>稿定设计 · 企业版</span><span>10</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker">Feedback & Needs</div>
+      <h2>使用反馈与需求沟通：确认下一阶段重点支持方向</h2>
+      <div class="feedback-board">
+        <div class="feedback-panel blue">
+          <h3>建议现场确认的使用反馈</h3>
+          <div class="feedback-list">
+            <div class="feedback-item"><strong>当前高频场景</strong><span>哪些业务场景已经稳定使用稿定设计？是否集中在营销海报、客户触达、投教内容、内宣或会议 PPT？</span></div>
+            <div class="feedback-item"><strong>用户使用体验</strong><span>一线用户在找模板、改内容、下载导出、版权素材使用上是否还有阻碍？</span></div>
+            <div class="feedback-item"><strong>组织推广反馈</strong><span>哪些部门适合作为标杆推广？哪些部门需要补充培训或模板支持？</span></div>
+          </div>
+        </div>
+        <div class="feedback-panel">
+          <h3>建议沟通的使用需求</h3>
+          <div class="feedback-list">
+            <div class="feedback-item"><strong>模板与资源库需求</strong><span>是否需要共建证券营销、活动宣传、产品介绍、投教内容等标准模板包，并统一沉淀到企业资源库？</span></div>
+            <div class="feedback-item"><strong>席位与权限需求</strong><span>结合年度用户 150 人、活跃用户 130 人，确认续约增购规模、部门分配和权限管理要求。</span></div>
+            <div class="feedback-item"><strong>后续运营节奏</strong><span>建议建立季度复盘机制，持续跟踪活跃、导出、资源库新增、标杆案例和培训覆盖。</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="footer"><span>稿定设计 · 企业版</span><span>00</span></div>
+    </section>
+  </main>
+
+  <div class="controls">
+    <button class="secondary icon" id="home" title="首页" aria-label="回到首页">⌂</button>
+    <button class="secondary" id="prev">上一页</button>
+    <div class="counter" id="counter">1 / 1</div>
+    <button id="next">下一页</button>
+  </div>
+  <div class="image-modal" id="imageModal">
+    <button id="closeImage" aria-label="关闭图片">×</button>
+    <img id="modalImage" alt="">
+  </div>
+
+  <script>
+    const slides = Array.from(document.querySelectorAll(".slide"));
+    const bar = document.getElementById("bar");
+    const counter = document.getElementById("counter");
+    const homeButton = document.getElementById("home");
+    const prevButton = document.getElementById("prev");
+    const nextButton = document.getElementById("next");
+    const imageModal = document.getElementById("imageModal");
+    const modalImage = document.getElementById("modalImage");
+    const closeImage = document.getElementById("closeImage");
+    let index = 0;
+    slides.forEach((slide, i) => {
+      const page = slide.querySelector(".footer span:last-child");
+      if (page) page.textContent = String(i + 1).padStart(2, "0");
+    });
+    function show(nextIndex) {
+      index = Math.max(0, Math.min(slides.length - 1, nextIndex));
+      slides.forEach((slide, i) => slide.classList.toggle("active", i === index));
+      counter.textContent = `${index + 1} / ${slides.length}`;
+      bar.style.width = `${((index + 1) / slides.length) * 100}%`;
+      homeButton.disabled = index === 0;
+      prevButton.disabled = index === 0;
+      nextButton.disabled = index === slides.length - 1;
+      location.hash = `slide-${String(index + 1).padStart(2, "0")}`;
+    }
+    homeButton.addEventListener("click", () => show(0));
+    prevButton.addEventListener("click", () => show(index - 1));
+    nextButton.addEventListener("click", () => show(index + 1));
+    window.addEventListener("keydown", (event) => {
+      if (imageModal.classList.contains("active")) {
+        if (event.key === "Escape") imageModal.classList.remove("active");
+        return;
+      }
+      if (["ArrowRight", "PageDown", " "].includes(event.key)) show(index + 1);
+      if (["ArrowLeft", "PageUp"].includes(event.key)) show(index - 1);
+      if (event.key === "Home") show(0);
+      if (event.key === "End") show(slides.length - 1);
+    });
+    document.querySelectorAll(".zoomable").forEach((img) => {
+      img.addEventListener("click", () => {
+        modalImage.src = img.src;
+        modalImage.alt = img.alt || "";
+        imageModal.classList.add("active");
+      });
+    });
+    imageModal.addEventListener("click", (event) => {
+      if (event.target === imageModal || event.target === closeImage) imageModal.classList.remove("active");
+    });
+    const match = location.hash.match(/slide-(\d+)/);
+    show(match ? Number(match[1]) - 1 : 0);
+  </script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="130" viewBox="0 0 420 130" role="img" aria-label="东莞证券 DONGGUAN SECURITIES">
+  <rect width="420" height="130" fill="none"/>
+  <g transform="translate(18 18)">
+    <path d="M50 0c21 0 38 17 38 38 0 12-6 24-15 31-10 8-24 10-36 5 10-3 18-10 22-19 5-12-1-26-13-31-12-5-26 1-31 13C8 32 4 24 4 17 13 7 26 0 50 0Z" fill="#d91f2d"/>
+    <path d="M17 36c9-12 25-15 37-6 8 6 12 15 11 25-4 10-13 17-22 20-11-4-22-2-31 6C4 72 0 60 0 50c0-8 2-15 6-22 3 5 7 9 11 8Z" fill="#c79a52"/>
+    <path d="M35 77c13 6 29 3 39-7-8 18-26 30-47 30-10 0-19-3-27-8 5-8 13-13 22-15 4-1 8-1 13 0Z" fill="#d91f2d"/>
+  </g>
+  <g fill="#d91f2d" transform="translate(132 24)">
+    <text x="0" y="44" font-family="STKaiti, KaiTi, serif" font-size="40" font-weight="800" letter-spacing="4">东莞证券</text>
+    <text x="2" y="76" font-family="Arial, sans-serif" font-size="18" font-weight="800" letter-spacing="2">DONGGUAN SECURITIES</text>
+  </g>
+</svg>

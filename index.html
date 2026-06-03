@@ -26,7 +26,7 @@
     .deck { width: 100vw; height: 100vh; display: grid; place-items: center; padding: 0; }
     .slide { display: none; width: 100vw; height: 100vh; background: var(--paper); position: relative; padding: 54px 68px; overflow: hidden; }
     .slide.active { display: block; }
-    .cover-slide { padding-top: 104px; }
+    .cover-slide { padding-top: 204px; }
     .kicker { display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: 14px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 20px; }
     .kicker::before { content: ""; width: 46px; height: 3px; background: var(--gold); display: block; }
     h1, h2, h3, p { margin: 0; }
@@ -51,14 +51,17 @@
     .counter { min-width: 58px; text-align: center; font-weight: 700; color: var(--slate); }
     .progress { position: fixed; left: 0; top: 0; height: 4px; width: 100%; background: #dbe3ee; z-index: 30; }
     .bar { height: 100%; background: linear-gradient(90deg, var(--gold), var(--blue)); width: 0; transition: width .2s ease; }
-    .cover-logos { margin: 28px 0 28px; display: flex; align-items: center; gap: 22px; height: 72px; }
+    .cover-logos { margin: -52px 0 92px; display: grid; grid-template-columns: 300px 34px 72px; align-items: center; column-gap: 32px; height: 72px; }
     .cover-logo-card { display: flex; align-items: center; justify-content: center; background: transparent; border: 0; padding: 0; }
-    .cover-logo-card.dg { width: 332px; height: 72px; justify-content: flex-start; }
+    .cover-logo-card.dg { width: 300px; height: 72px; justify-content: flex-end; }
     .cover-logo-card.gd { width: 72px; height: 72px; overflow: hidden; }
     .cover-logo-card.dg img { width: 300px; height: auto; display: block; }
     .cover-logo-card.gd img { width: 72px; height: 72px; object-fit: cover; display: block; border-radius: 8px; }
     .cover-logo-divider { width: 34px; height: 34px; display: grid; place-items: center; color: #94a3b8; font-size: 24px; font-weight: 300; }
     .cover-logo-divider::before { content: "×"; }
+    .cover-slide .cover-logos { justify-content: center; }
+    .cover-slide h1,
+    .cover-slide .lead { text-align: center; }
     .cover-meta { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-top: 92px; }
     .card { background: var(--white); border: 1px solid var(--line); padding: 30px 32px; min-height: 150px; position: relative; }
     .card.blue { background: var(--blue-50); border-color: #bbd3ff; }
@@ -287,7 +290,6 @@
   <div class="progress"><div class="bar" id="bar"></div></div>
   <main class="deck">
     <section class="slide active cover-slide">
-      <div class="kicker">Annual Usage Review</div>
       <div class="cover-logos">
         <div class="cover-logo-card dg"><img src="assets/dongguan_securities_logo.svg" alt="东莞证券 logo"></div>
         <div class="cover-logo-divider" aria-hidden="true"></div>

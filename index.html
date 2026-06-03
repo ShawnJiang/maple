@@ -217,12 +217,18 @@
     .asset-seg.personal { width: 99.2%; background: linear-gradient(90deg, var(--blue), #60a5fa); }
     .asset-seg.team { width: .8%; min-width: 10px; background: var(--gold); }
     .asset-seg.enterprise { width: .1%; min-width: 6px; background: var(--red); }
+    .asset-seg.template { width: 91.7%; background: linear-gradient(90deg, var(--blue), #60a5fa); }
+    .asset-seg.material { width: 8.1%; min-width: 28px; background: var(--gold); }
+    .asset-seg.other { width: .3%; min-width: 6px; background: var(--green); }
     .asset-legend { display: grid; grid-template-columns: 1fr 150px 150px; gap: 18px; margin-top: 18px; align-items: start; }
     .asset-legend div { font-size: 18px; font-weight: 900; }
     .asset-legend strong { display: block; margin-top: 6px; font-size: 20px; }
     .asset-legend .personal { color: var(--blue); text-align: left; }
     .asset-legend .team { color: var(--gold); text-align: center; }
     .asset-legend .enterprise { color: var(--red); text-align: right; }
+    .asset-legend .template { color: var(--blue); text-align: left; }
+    .asset-legend .material { color: var(--gold); text-align: center; }
+    .asset-legend .other { color: var(--green); text-align: right; }
     .dept-mini-table { margin-top: 36px; display: grid; gap: 4px; }
     .dept-mini-row { display: grid; grid-template-columns: 1fr 70px 70px 100px 100px; align-items: center; min-height: 24px; background: var(--white); border: 1px solid #e5eaf1; padding: 0 12px; font-size: 13px; color: var(--slate); }
     .dept-mini-row.head { background: #f1f5f9; color: var(--muted); font-weight: 900; }
@@ -392,7 +398,12 @@
         <div class="metric green"><div class="num">1,528</div><div class="caption">PPT 模板导出</div><div class="sub">会议、培训和汇报场景基础</div></div>
         <div class="metric"><div class="num">2,727</div><div class="caption">抠图导出</div><div class="sub">本地化内容制作需求明显</div></div>
       </div>
-      <div class="callouts">
+      <div class="asset-structure" style="margin-top:28px;">
+        <h3>导出结构：模板导出占主导，素材导出支撑二次创作</h3>
+        <div class="asset-bar"><div class="asset-seg template"></div><div class="asset-seg material"></div><div class="asset-seg other"></div></div>
+        <div class="asset-legend"><div class="template">模板导出 <strong>35,868 / 91.7%</strong></div><div class="material">素材导出 <strong>3,160 / 8.1%</strong></div><div class="other">其他导出 <strong>107 / 0.3%</strong></div></div>
+      </div>
+      <div class="callouts" style="margin-top:28px;">
         <div class="callout"><h3>使用特点</h3><p class="body">图片模板导出同比增长 13.0%，说明分支机构对快速生成海报、活动图和营销物料的依赖进一步增强。</p></div>
         <div class="callout gold"><h3>运营建议</h3><p class="body">围绕证券客户高频场景沉淀标准模板包，减少重复设计，提高各分支机构内容产出一致性。</p></div>
       </div>
